@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 20px auto;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error-message {
+      color: #FF0000;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Login</h1>
+
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="button" onclick="loginUser()">Login</button>
+  </form>
+
+  <div id="errorMessage"></div>
+
+  <script>
+    function loginUser() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const loginData = {
+        username,
+        password,
+      };
+
+      fetch('http://localhost:2001/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Invalid credentials');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Login successful:', data.token);
+          // Redirect to another page or perform other actions after successful login
+          window.location.href = 'dashboard.html'; // Change this to the desired URL
+        })
+        .catch(error => {
+          console.error('Login failed:', error.message);
+          // Display error message to the user
+          document.getElementById('errorMessage').innerHTML = <p class="error-message">${error.message}</p>;
+        });
+    }
+  </script>
+</body>
+</html>
